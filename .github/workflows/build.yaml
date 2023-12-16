@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@main
 
       - name: Setup Node 20
-        working-directory: ./Extensions/combined
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'

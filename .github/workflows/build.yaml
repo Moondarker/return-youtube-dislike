@@ -1,0 +1,62 @@
+name: Test Build Extension
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Extensions/combined/**
+
+  pull_request:
+    branches: [main]
+    paths:
+      - Extensions/combined/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./Extensions/combined
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Test extension
+        run: npm run test --if-present
+
+      - name: Zip artifacts
+        run: |
+          zip chrome.zip ./dist/chrome/* -r
+          zip firefox.zip ./dist/firefox/* -r
+          zip safari.zip ./dist/safari/* -r
+
+      - name: 'Upload Chrome artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Chrome-extension
+          path: ./Extensions/combined/chrome.zip
+
+      - name: 'Upload Firefox artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Firefox-extension
+          path: ./Extensions/combined/firefox.zip
+
+      - name: 'Upload Safari artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Safari-extension
+          path: ./Extensions/combined/safari.zip

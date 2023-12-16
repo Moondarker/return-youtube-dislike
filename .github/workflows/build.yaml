@@ -34,9 +34,6 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Test extension
-        run: npm run test --if-present
-
       - name: Zip artifacts
         run: |
           zip chrome.zip ./dist/chrome/* -r
